@@ -14,7 +14,7 @@
 # limitations under the License.
 
 path=$( cd "$(dirname "${BASH_SOURCE}")" ; pwd -P )
-
+#echo ${BASH_SOURCE}
 cd "$path"
 
 if [ -f .version ]; then
@@ -31,7 +31,7 @@ ADD=$(echo ${vstring} | cut -s -d- -f2)
 
 git rev-parse 2> /dev/null
 if [ $? == 0 ]; then
-    CMT=$(git describe --dirty --match 'v*'| cut -s -d- -f3,4)
+    CMT=$(git describe --dirty --match 'm*'| cut -s -d- -f3,4)
 else
     CMT=$(echo ${vstring} | cut -s -d- -f3,4)
 fi

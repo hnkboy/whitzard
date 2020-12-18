@@ -5,11 +5,11 @@ project(wizt)
 #set(CMAKE_CACHEFILE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/build)
 #创建文件夹
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/build)
-
+set(COMPILE_FILES)
 message(STATUS "build start...")
 #message(STATUS ${CMAKE_CURRENT_SOURCE_DIR})
 add_subdirectory(src)
-add_executable(${PROJECT} ${COMPILE_FILES})
+
 #set(EXECUTABLE_OUTPUT_PATH ../build/bin)
 
 #set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build-root/lib)
