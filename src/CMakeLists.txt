@@ -15,9 +15,6 @@ endif()
 
 
 
-
-
-
 project(${PROJECT}_src)
 message(STATUS ${CMAKE_HOST_SYSTEM_PROCESSOR})
 message(STATUS ${CMAKE_CROSSCOMPILING})
