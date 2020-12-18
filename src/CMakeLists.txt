@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 set(PROJECT whitzard)
 project(${PROJECT} C)
 
-
 ##############################################################################
 # cross compiling
 ##############################################################################
