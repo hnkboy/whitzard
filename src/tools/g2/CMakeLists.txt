@@ -11,26 +11,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-macro(add_whitzard_executable exec)
-  cmake_parse_arguments(ARG
-    "ENABLE_EXPORTS;NO_INSTALL"
-    ""
-    "SOURCES;LINK_LIBRARIES;DEPENDS"
-    ${ARGN}
-  )
+option(VPP_BUILD_G2 "Build g2 tool." OFF)
+if(VPP_BUILD_G2)
+  find_package(GTK2 COMPONENTS gtk)
+  if(GTK2_FOUND)
+    set(CMAKE_C_FLAGS "-Wno-deprecated-declarations ${CMAKE_C_FLAGS}")
+    include_directories(${GTK2_INCLUDE_DIRS})
+    add_vpp_executable(g2
+      SOURCES
+      clib.c
+      cpel.c
+      events.c
+      main.c
+      menu1.c
+      pointsel.c
+      props.c
+      g2version.c
+      view1.c
 
-  add_executable(${exec} ${ARG_SOURCES})
-  if(ARG_LINK_LIBRARIES)
-    target_link_libraries(${exec} ${ARG_LINK_LIBRARIES})
+      LINK_LIBRARIES vppinfra Threads::Threads m ${GTK2_LIBRARIES}
+    )
   endif()
-  if(ARG_ENABLE_EXPORTS)
-    set_target_properties(${exec} PROPERTIES ENABLE_EXPORTS 1)
-  endif()
-  if(ARG_DEPENDS)
-    add_dependencies(${exec} ${ARG_DEPENDS})
-  endif()
-  if(NOT ARG_NO_INSTALL)
-    install(TARGETS ${exec} DESTINATION ${WHITZARD_RUNTIME_DIR})
-  endif()
-endmacro()
-
+endif()

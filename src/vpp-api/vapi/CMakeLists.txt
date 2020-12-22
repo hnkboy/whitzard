@@ -11,26 +11,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-macro(add_whitzard_executable exec)
-  cmake_parse_arguments(ARG
-    "ENABLE_EXPORTS;NO_INSTALL"
-    ""
-    "SOURCES;LINK_LIBRARIES;DEPENDS"
-    ${ARGN}
-  )
+include_directories (
+  ${CMAKE_CURRENT_SOURCE_DIR}/..
+  ${CMAKE_CURRENT_BINARY_DIR}/..
+)
 
-  add_executable(${exec} ${ARG_SOURCES})
-  if(ARG_LINK_LIBRARIES)
-    target_link_libraries(${exec} ${ARG_LINK_LIBRARIES})
-  endif()
-  if(ARG_ENABLE_EXPORTS)
-    set_target_properties(${exec} PROPERTIES ENABLE_EXPORTS 1)
-  endif()
-  if(ARG_DEPENDS)
-    add_dependencies(${exec} ${ARG_DEPENDS})
-  endif()
-  if(NOT ARG_NO_INSTALL)
-    install(TARGETS ${exec} DESTINATION ${WHITZARD_RUNTIME_DIR})
-  endif()
-endmacro()
 
+install(
+  PROGRAMS
+  vapi_c_gen.py
+  vapi_cpp_gen.py
+  vapi_json_parser.py
+
+  DESTINATION ${WHITZARD_RUNTIME_DIR}
+  COMPONENT vpp-dev
+)

@@ -1,13 +1,16 @@
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
-
+set(PROJECT whitzard)
+project(${PROJECT})
 include(CheckCCompilerFlag)
 include(cmake/exec.cmake)
 include(cmake/library.cmake)
 include(cmake/misc.cmake)
 include(cmake/cpu.cmake)
+include(cmake/syscall.cmake)
+include(cmake/api.cmake)
 #message(STATUS ${CMAKE_CURRENT_SOURCE_DIR})
-set(PROJECT whitzard)
-project(${PROJECT} C)
+
+
 
 
 ##############################################################################
@@ -19,8 +22,12 @@ execute_process(
   OUTPUT_VARIABLE WHITZARD_VERSION
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
-string(REPLACE "-" ";" WHITZARD_LIB_VERSION ${WHITZARD_VERSION})
-list(GET WHITZARD_LIB_VERSION 0 WHITZARD_LIB_VERSION)
+if(WHITZARD_VERSION)
+
+    string(REPLACE "-" ";" WHITZARD_LIB_VERSION ${WHITZARD_VERSION})
+    list(GET WHITZARD_LIB_VERSION 0 WHITZARD_LIB_VERSION)
+endif()
+
 
 ##############################################################################
 # cross compiling
@@ -82,10 +89,13 @@ set_property(CACHE CMAKE_BUILD_TYPE PROPERTY
 # 添加搜索的头文件位置
 ##############################################################################
 include_directories (
-    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}
     ${CMAKE_BINARY_DIR}
     ${CMAKE_BINARY_DIR}/include
 )
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
 ##############################################################################
 # subdirs - order matters
 ##############################################################################
@@ -93,6 +103,13 @@ set(SUBDIRS
     main
     hello
     vppinfra
+    #vlib
+    #vlibapi
+    #vlibmemory
+    vpp-api
+    vlib
+    cmake
+    vpp
 )
 
 foreach(DIR ${SUBDIRS})

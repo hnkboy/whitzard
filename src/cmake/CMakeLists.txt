@@ -11,26 +11,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-macro(add_whitzard_executable exec)
-  cmake_parse_arguments(ARG
-    "ENABLE_EXPORTS;NO_INSTALL"
-    ""
-    "SOURCES;LINK_LIBRARIES;DEPENDS"
-    ${ARGN}
-  )
+install(
+  FILES
+  api.cmake
+  cpu.cmake
+  library.cmake
+  WhitzardConfig.cmake
 
-  add_executable(${exec} ${ARG_SOURCES})
-  if(ARG_LINK_LIBRARIES)
-    target_link_libraries(${exec} ${ARG_LINK_LIBRARIES})
-  endif()
-  if(ARG_ENABLE_EXPORTS)
-    set_target_properties(${exec} PROPERTIES ENABLE_EXPORTS 1)
-  endif()
-  if(ARG_DEPENDS)
-    add_dependencies(${exec} ${ARG_DEPENDS})
-  endif()
-  if(NOT ARG_NO_INSTALL)
-    install(TARGETS ${exec} DESTINATION ${WHITZARD_RUNTIME_DIR})
-  endif()
-endmacro()
+  DESTINATION
+  ${VPP_LIBRARY_DIR}/cmake/vpp
 
+  COMPONENT vpp-dev
+)

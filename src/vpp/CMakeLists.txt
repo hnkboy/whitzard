@@ -11,26 +11,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-macro(add_whitzard_executable exec)
-  cmake_parse_arguments(ARG
-    "ENABLE_EXPORTS;NO_INSTALL"
-    ""
-    "SOURCES;LINK_LIBRARIES;DEPENDS"
-    ${ARGN}
-  )
 
-  add_executable(${exec} ${ARG_SOURCES})
-  if(ARG_LINK_LIBRARIES)
-    target_link_libraries(${exec} ${ARG_LINK_LIBRARIES})
-  endif()
-  if(ARG_ENABLE_EXPORTS)
-    set_target_properties(${exec} PROPERTIES ENABLE_EXPORTS 1)
-  endif()
-  if(ARG_DEPENDS)
-    add_dependencies(${exec} ${ARG_DEPENDS})
-  endif()
-  if(NOT ARG_NO_INSTALL)
-    install(TARGETS ${exec} DESTINATION ${WHITZARD_RUNTIME_DIR})
-  endif()
-endmacro()
+##############################################################################
+# vppctl binary
+##############################################################################
+add_whitzard_executable(vppctl
+  SOURCES app/vppctl.c
+  LINK_LIBRARIES vppinfra
+)
 
+add_whitzard_executable(vpp
+  ENABLE_EXPORTS
+  SOURCES vnet/main.c
+  LINK_LIBRARIES vlib vppinfra Threads::Threads ${CMAKE_DL_LIBS}
+)
+install(FILES conf/startup.conf DESTINATION etc/vpp COMPONENT vpp)
+install(FILES conf/80-vpp.conf DESTINATION etc/sysctl.d COMPONENT vpp)

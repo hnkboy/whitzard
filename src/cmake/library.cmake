@@ -20,7 +20,6 @@ macro(add_whitzard_library lib)
   )
 
   add_library(${lib} SHARED ${ARG_SOURCES})
-  target_compile_options(${lib} PRIVATE -Wall -fno-common)
   if(WHITZARD_LIB_VERSION)
     set_target_properties(${lib} PROPERTIES SOVERSION ${WHITZARD_LIB_VERSION})
   endif()
@@ -35,14 +34,30 @@ macro(add_whitzard_library lib)
   endif()
   install(
     TARGETS ${lib}
-    DESTINATION lib
+    DESTINATION ${WHITZARD_LIBRARY_DIR}
     COMPONENT ${ARG_COMPONENT}
   )
+  #message(INFO " WHITZARD_LIBRARY_DIR ${WHITZARD_LIBRARY_DIR}")
+  #message(INFO " ARG_COMPONENT ${ARG_COMPONENT}")
 ##############################################################################
 # 疑问部分，待分析
 ##############################################################################
   if(ARG_MULTIARCH_SOURCES)
-    vpp_library_set_multiarch_sources(${lib} ${ARG_MULTIARCH_SOURCES})
+    vpp_library_set_multiarch_sources(${lib} "${ARG_DEPENDS}" ${ARG_MULTIARCH_SOURCES})
+  endif()
+
+  if(ARG_API_FILES)
+    vpp_add_api_files(${lib} core vpp ${ARG_API_FILES})
+    foreach(file ${ARG_API_FILES})
+      get_filename_component(dir ${file} DIRECTORY)
+      install(
+	FILES ${file} ${CMAKE_CURRENT_BINARY_DIR}/${file}.h
+	${CMAKE_CURRENT_BINARY_DIR}/${file}_enum.h
+	${CMAKE_CURRENT_BINARY_DIR}/${file}_types.h
+	DESTINATION include/${lib}/${dir}
+	COMPONENT vpp-dev
+    )
+    endforeach()
   endif()
 
   if(ARG_DEPENDS)
@@ -65,13 +80,24 @@ endmacro()
 ##############################################################################
 # header files
 ##############################################################################
+function (add_vpp_headers path)
+  foreach(file ${ARGN})
+    get_filename_component(dir ${file} DIRECTORY)
+    install(
+      FILES ${file}
+      DESTINATION include/${path}/${dir}
+      COMPONENT vpp-dev
+    )
+  endforeach()
+endfunction()
 function (add_whitzard_headers path)
   foreach(file ${ARGN})
     get_filename_component(dir ${file} DIRECTORY)
     install(
       FILES ${file}
       DESTINATION include/${path}/${dir}
-      COMPONENT whitzard-dev
+      COMPONENT vpp-dev
     )
   endforeach()
 endfunction()
+

@@ -26,8 +26,8 @@ else(VPP_VECTOR_GROW_BY_ONE)
 endif(VPP_VECTOR_GROW_BY_ONE)
 
 configure_file(
-  ${CMAKE_SOURCE_DIR}/src/vppinfra/config.h.in
-  ${CMAKE_BINARY_DIR}/src/vppinfra/config.h
+  ${CMAKE_SOURCE_DIR}/vppinfra/config.h.in
+  ${CMAKE_BINARY_DIR}/vppinfra/config.h
 )
 
 install(
@@ -42,7 +42,52 @@ add_definitions(-fvisibility=hidden)
 # vppinfra sources
 ##############################################################################
 set(VPPINFRA_SRCS
+  backtrace.c
   bihash_all_vector.c
+  cpu.c
+  dlmalloc.c
+  elf.c
+  elog.c
+  error.c
+  fifo.c
+  format.c
+  graph.c
+  hash.c
+  heap.c
+  longjmp.S
+  macros.c
+  maplog.c
+  mem.c
+  mem_dlmalloc.c
+  mhash.c
+  mpcap.c
+  pcap.c
+  pmalloc.c
+  pool.c
+  ptclosure.c
+  random_buffer.c
+  random.c
+  random_isaac.c
+  rbtree.c
+  serialize.c
+  socket.c
+  std-formats.c
+  string.c
+  time.c
+  time_range.c
+  timing_wheel.c
+  tw_timer_2t_2w_512sl.c
+  tw_timer_16t_1w_2048sl.c
+  tw_timer_16t_2w_512sl.c
+  tw_timer_1t_3w_1024sl_ov.c
+  tw_timer_2t_1w_2048sl.c
+  tw_timer_4t_3w_256sl.c
+  unformat.c
+  unix-formats.c
+  unix-misc.c
+  valloc.c
+  vec.c
+  vector.c
 )
 
 set(VPPINFRA_HEADERS
@@ -154,3 +199,50 @@ add_whitzard_library(vppinfra
   INSTALL_HEADERS ${VPPINFRA_HEADERS}
   COMPONENT libvppinfra
 )
+
+##############################################################################
+# vppinfra headers
+##############################################################################
+option(VPP_BUILD_VPPINFRA_TESTS "Build vppinfra tests." OFF)
+if(VPP_BUILD_VPPINFRA_TESTS)
+  foreach(test
+    bihash_vec88
+    dlist
+    elf
+    elog
+    fifo
+    format
+    fpool
+    hash
+    heap
+    longjmp
+    macros
+    maplog
+    pmalloc
+    pool_iterate
+    ptclosure
+    random
+    random_isaac
+    rwlock
+    serialize
+    socket
+    spinlock
+    time
+    time_range
+    tw_timer
+    valloc
+    vec
+  )
+    add_whitzard_executable(test_${test}
+      SOURCES test_${test}.c
+      LINK_LIBRARIES vppinfra pthread
+      )
+  endforeach()
+
+  foreach(test bihash_template)
+    add_whitzard_executable(test_${test}
+      SOURCES test_${test}.c
+      LINK_LIBRARIES vppinfra Threads::Threads
+      )
+  endforeach()
+endif(VPP_BUILD_VPPINFRA_TESTS)

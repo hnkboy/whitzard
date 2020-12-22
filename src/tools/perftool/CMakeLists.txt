@@ -11,26 +11,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-macro(add_whitzard_executable exec)
-  cmake_parse_arguments(ARG
-    "ENABLE_EXPORTS;NO_INSTALL"
-    ""
-    "SOURCES;LINK_LIBRARIES;DEPENDS"
-    ${ARGN}
+option(VPP_BUILD_PERFTOOL "Build Perf tool" OFF)
+if (VPP_BUILD_PERFTOOL)
+  add_vpp_library(cperf
+    SOURCES
+    delsvec.c
+    linreg.c
+    props.c
+    cpel_util.c
   )
 
-  add_executable(${exec} ${ARG_SOURCES})
-  if(ARG_LINK_LIBRARIES)
-    target_link_libraries(${exec} ${ARG_LINK_LIBRARIES})
-  endif()
-  if(ARG_ENABLE_EXPORTS)
-    set_target_properties(${exec} PROPERTIES ENABLE_EXPORTS 1)
-  endif()
-  if(ARG_DEPENDS)
-    add_dependencies(${exec} ${ARG_DEPENDS})
-  endif()
-  if(NOT ARG_NO_INSTALL)
-    install(TARGETS ${exec} DESTINATION ${WHITZARD_RUNTIME_DIR})
-  endif()
-endmacro()
-
+  foreach(name
+    c2cpel
+    cpelatency
+    cpeldump
+    cpelinreg
+    cpelstate
+    elog_merge
+  )
+    add_vpp_executable(${name} SOURCES ${name}.c
+      LINK_LIBRARIES cperf vppinfra m)
+  endforeach()
+endif()
