@@ -1,2 +1,0 @@
-ccache /usr/bin/cc -Wno-address-of-packed-member -march=corei7 -mtune=corei7-avx    CMakeFiles/elftool.dir/elftool.c.o  -o ../../bin/elftool -Wl,-rpath,/home/jerry/vpp/src/lib/libvppinfra.so.scripts: ../../lib/libvppinfra.so.scripts/version
-19.04.4 -lm 
